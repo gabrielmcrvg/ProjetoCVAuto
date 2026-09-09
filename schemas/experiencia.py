@@ -12,6 +12,14 @@ class ExperienciaEntrada(BaseModel):
     descricao: str
 
 
+class ExperienciaAtualizar(BaseModel):
+    cargo: Optional[str] = None
+    empresa: Optional[str] = None
+    data_inicio: Optional[date] = None
+    data_fim: Optional[date] = None
+    descricao: Optional[str] = None
+
+
 class ExperienciaResposta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

@@ -11,6 +11,10 @@ class UsuarioResposta(BaseModel):
     id: int
     email: EmailStr
 
+class SenhaAtualizar(BaseModel):
+    senha_atual: str
+    senha_nova: str = Field(min_length=6)
+
 class Token(BaseModel):
     access_token: str
     token_type: str

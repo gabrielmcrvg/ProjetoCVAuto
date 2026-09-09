@@ -9,6 +9,10 @@ class HabilidadeEntrada(BaseModel):
     nome: str
 
 
+class HabilidadeAtualizar(BaseModel):
+    nome: Optional[str] = None
+
+
 class HabilidadeResposta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

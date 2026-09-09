@@ -12,6 +12,13 @@ class CertificadoEntrada(BaseModel):
     periodo: str
 
 
+class CertificadoAtualizar(BaseModel):
+    nome: Optional[str] = None
+    instituicao: Optional[str] = None
+    carga_horaria: Optional[int] = None
+    periodo: Optional[str] = None
+
+
 class CertificadoResposta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

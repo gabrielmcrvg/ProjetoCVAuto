@@ -1,9 +1,16 @@
+from typing import Optional
+
 from pydantic import BaseModel, ConfigDict
 
 
 class IdiomaEntrada(BaseModel):
     nome: str
     nivel: str
+
+
+class IdiomaAtualizar(BaseModel):
+    nome: Optional[str] = None
+    nivel: Optional[str] = None
 
 
 class IdiomaResposta(BaseModel):

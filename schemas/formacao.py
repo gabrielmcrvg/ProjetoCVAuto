@@ -13,6 +13,14 @@ class FormacaoEntrada(BaseModel):
     situacao: Situacao
 
 
+class FormacaoAtualizar(BaseModel):
+    curso: Optional[str] = None
+    instituicao: Optional[str] = None
+    ano_inicio: Optional[int] = None
+    ano_conclusao: Optional[int] = None
+    situacao: Optional[Situacao] = None
+
+
 class FormacaoResposta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

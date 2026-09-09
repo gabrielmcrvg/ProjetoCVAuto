@@ -11,6 +11,14 @@ class ProjetoEntrada(BaseModel):
     link: Optional[str] = None
 
 
+class ProjetoAtualizar(BaseModel):
+    nome: Optional[str] = None
+    contexto: Optional[str] = None
+    tecnologias: Optional[str] = None
+    descricao: Optional[str] = None
+    link: Optional[str] = None
+
+
 class ProjetoResposta(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
