@@ -10,7 +10,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 
 from database import SessionDep
-from models.usuario import Usuario
+from models.usuarios import Usuario
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -38,12 +38,12 @@ def usuario_atual(session: SessionDep, token: str = Depends(OAuth2_scheme)) -> U
         headers={"WWW-Authenticate": "Bearer"})
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        username = payload.get("sub")
-        if username is None:
+        email = payload.get("sub")
+        if email is None:
             raise erro
     except jwt.PyJWTError:
         raise erro
-    usuario = session.query(Usuario).filter(Usuario.username == username).first()
+    usuario = session.query(Usuario).filter(Usuario.email == email).first()
     if usuario is None:
         raise erro
     return usuario
