@@ -157,7 +157,7 @@ function renderizarSecaoDadosPessoais() {
         <span class="secao-seta">▸</span>
       </div>
       <div class="secao-corpo">
-        <label>Título do currículo (uso interno seu, não aparece no PDF)
+        <label>Título do currículo
           <input type="text" id="dp-titulo">
         </label>
         <label>Nome completo
@@ -710,6 +710,17 @@ function renderPreview() {
 }
 
 /* ============================================================
+   NOME DO ARQUIVO DO PDF (baseado no titulo do curriculo)
+   ============================================================ */
+
+function slugificarNomeArquivo(texto) {
+  const base = String(texto || "").trim().toLowerCase().replace(/\s+/g, "_");
+  // remove apenas caracteres invalidos em nomes de arquivo; mantem acentos
+  const limpo = base.replace(/[\\/:*?"<>|]/g, "");
+  return limpo || "curriculo";
+}
+
+/* ============================================================
    EVENTOS: TOPO
    ============================================================ */
 
@@ -727,7 +738,7 @@ document.getElementById("botao-baixar-pdf").addEventListener("click", async () =
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `curriculo_${curriculo.id}.pdf`;
+    link.download = `${slugificarNomeArquivo(curriculo.titulo)}.pdf`;
     document.body.appendChild(link);
     link.click();
     link.remove();
