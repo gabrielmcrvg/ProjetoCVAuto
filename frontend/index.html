@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Criador de Curriculo com IA</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ===================== TELA DE LOGIN / REGISTRO ===================== -->
+<div id="tela-auth" class="tela-auth">
+  <div class="cartao-auth">
+    <h1>Criador de Curriculo com IA</h1>
+
+    <div id="auth-erro" class="mensagem-erro" hidden></div>
+
+    <form id="form-login">
+      <h2>Entrar</h2>
+      <label>Email
+        <input type="email" id="login-email" required autocomplete="username">
+      </label>
+      <label>Senha
+        <input type="password" id="login-senha" required autocomplete="current-password">
+      </label>
+      <button type="submit">Entrar</button>
+      <p class="troca-form">Ainda nao tem conta? <a href="#" id="ir-para-registro">Criar conta</a></p>
+    </form>
+
+    <form id="form-registro" hidden>
+      <h2>Criar conta</h2>
+      <label>Email
+        <input type="email" id="registro-email" required autocomplete="username">
+      </label>
+      <label>Senha (minimo 6 caracteres)
+        <input type="password" id="registro-senha" required minlength="6" autocomplete="new-password">
+      </label>
+      <button type="submit">Criar conta</button>
+      <p class="troca-form">Ja tem conta? <a href="#" id="ir-para-login">Entrar</a></p>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="comum.js"></script>
+<script src="login.js"></script>
+</body>
+</html>

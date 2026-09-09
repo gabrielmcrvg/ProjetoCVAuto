@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Criar Curriculo - Criador de Curriculo com IA</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topo">
+  <span class="topo-titulo">Criador de Curriculo com IA</span>
+  <div class="topo-acoes">
+    <button id="botao-sair" class="botao-secundario">Sair</button>
+  </div>
+</header>
+
+<!-- Usuario logado mas ainda sem curriculo -->
+<div id="tela-criar-curriculo" class="container-criar-curriculo">
+  <div class="cartao-auth">
+    <h2>Vamos criar seu curriculo</h2>
+    <p class="texto-ajuda">Preencha os dados basicos pra comecar. Da pra editar tudo depois.</p>
+    <form id="form-criar-curriculo">
+      <label>Titulo do curriculo (uso interno seu, nao aparece no PDF)
+        <input type="text" id="cc-titulo" required placeholder="Ex: Curriculo Backend Python">
+      </label>
+      <label>Nome completo
+        <input type="text" id="cc-nome" required>
+      </label>
+      <label>Localizacao
+        <input type="text" id="cc-localizacao" required placeholder="Ex: Sao Paulo, Brasil">
+      </label>
+      <label>Telefone
+        <input type="text" id="cc-telefone" required>
+      </label>
+      <label>Resumo profissional
+        <textarea id="cc-resumo" rows="4" required></textarea>
+      </label>
+      <button type="submit">Criar curriculo</button>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="comum.js"></script>
+<script src="criar-curriculo.js"></script>
+</body>
+</html>

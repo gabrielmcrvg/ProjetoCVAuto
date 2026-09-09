@@ -1,9 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from database import SessionDep
 from models.projetos import Projetos
+from schemas.ia import TextoSugerido
 from schemas.projeto import ProjetoAtualizar, ProjetoEntrada, ProjetoResposta
 from seguranca import CurriculoDoUsuario
+from services.gemini import reescrever_texto
 from utils.dependencias import ProjetoDoUsuario
 
 router = APIRouter(prefix="/curriculos/{curriculo_id}/projetos", tags=["Projetos"])
@@ -25,6 +27,19 @@ def criar_projeto(dados: ProjetoEntrada, curriculo: CurriculoDoUsuario, session:
     session.add(projeto)
     session.commit()
     return projeto
+
+
+@router.post("/{projeto_id}/reescrever", response_model=TextoSugerido)
+def reescrever_projeto(projeto: ProjetoDoUsuario):
+    try:
+        texto_sugerido = reescrever_texto(projeto.descricao)
+    except Exception as erro:
+        print(f"[IA] Erro ao chamar o Gemini: {erro}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Erro ao se comunicar com o servico de IA",
+        )
+    return TextoSugerido(texto_sugerido=texto_sugerido)
 
 
 @router.patch("/{projeto_id}", response_model=ProjetoResposta)

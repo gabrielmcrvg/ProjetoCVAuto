@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+    @page {
+        size: A4;
+        margin: 2cm 2cm 2cm 2cm;
+    }
+    body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 10pt;
+        color: #1a1a1a;
+    }
+    h1 {
+        font-size: 20pt;
+        margin: 0 0 4px 0;
+    }
+    p.contato {
+        font-size: 9pt;
+        margin: 2px 0;
+    }
+    hr {
+        border: none;
+        border-top: 1px solid #333333;
+        margin: 8px 0 10px 0;
+    }
+    h2 {
+        font-size: 11pt;
+        border-bottom: 1px solid #333333;
+        padding-bottom: 2px;
+        margin-top: 14px;
+        margin-bottom: 6px;
+    }
+    p.item-titulo {
+        font-weight: bold;
+        margin: 0;
+        -pdf-keep-with-next: true;
+    }
+    p.item-subtitulo {
+        font-style: italic;
+        font-size: 9pt;
+        color: #333333;
+        margin: 0 0 4px 0;
+        -pdf-keep-with-next: true;
+    }
+    ul {
+        margin-top: 2px;
+        margin-bottom: 8px;
+        padding-left: 16px;
+    }
+    li {
+        margin-bottom: 2px;
+    }
+    p.paragrafo {
+        margin: 2px 0 8px 0;
+    }
+    a {
+        color: #1a1a1a;
+    }
+    p.habilidade-linha {
+        margin: 0 0 3px 0;
+    }
+</style>
+</head>
+<body>
+
+<h1>{{ curriculo.nome_completo }}</h1>
+<p class="contato">{{ curriculo.localizacao }} | {{ curriculo.telefone }} | {{ email }}</p>
+{% if curriculo.url_1 or curriculo.url_2 %}
+<p class="contato">
+{%- if curriculo.url_1 %}<a href="{{ curriculo.url_1 }}">{{ curriculo.url_1 }}</a>{% endif -%}
+{%- if curriculo.url_1 and curriculo.url_2 %} | {% endif -%}
+{%- if curriculo.url_2 %}<a href="{{ curriculo.url_2 }}">{{ curriculo.url_2 }}</a>{% endif -%}
+</p>
+{% endif %}
+<hr>
+
+<h2>RESUMO PROFISSIONAL</h2>
+<p class="paragrafo">{{ curriculo.resumo_profissional }}</p>
+
+{% if formacoes %}
+<h2>FORMAÇÃO ACADÊMICA</h2>
+{% for f in formacoes %}
+<div class="item-bloco">
+<p class="item-titulo">{{ f.curso }}</p>
+<p class="item-subtitulo">{{ f.instituicao }} | {{ f.ano_inicio }} – {{ f.ano_conclusao if f.ano_conclusao else 'Atual' }} ({{ f.situacao.value }})</p>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if experiencias %}
+<h2>EXPERIÊNCIA PROFISSIONAL</h2>
+{% for e in experiencias %}
+<div class="item-bloco">
+<p class="item-titulo">{{ e.cargo }}</p>
+<p class="item-subtitulo">{{ e.empresa }} | {{ e.data_inicio.strftime('%m/%Y') }} – {{ e.data_fim.strftime('%m/%Y') if e.data_fim else 'Atual' }}</p>
+<ul>
+{% for linha in e.linhas %}
+<li>{{ linha }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if projetos %}
+<h2>PROJETOS</h2>
+{% for p in projetos %}
+<div class="item-bloco">
+<p class="item-titulo">{{ p.nome }}</p>
+<p class="item-subtitulo">{{ p.contexto }} | {{ p.tecnologias }}{% if p.link %} | <a href="{{ p.link }}">{{ p.link }}</a>{% endif %}</p>
+<ul>
+{% for linha in p.linhas %}
+<li>{{ linha }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endfor %}
+{% endif %}
+
+{% if habilidades_agrupadas %}
+<h2>HABILIDADES TÉCNICAS</h2>
+{% for categoria, nomes in habilidades_agrupadas.items() %}
+<p class="habilidade-linha"><b>{{ categoria }}:</b> {{ nomes|join(', ') }}</p>
+{% endfor %}
+{% endif %}
+
+{% if certificados %}
+<h2>CERTIFICADOS E CURSOS</h2>
+<ul>
+{% for c in certificados %}
+<li><b>{{ c.nome }}</b> — {{ c.instituicao }}{% if c.carga_horaria %} | {{ c.carga_horaria }}h{% endif %} | {{ c.situacao.value }}{% if c.periodo %} em {{ c.periodo }}{% endif %}</li>
+{% endfor %}
+</ul>
+{% endif %}
+
+{% if idiomas %}
+<h2>IDIOMAS</h2>
+{% for i in idiomas %}
+<p class="habilidade-linha"><b>{{ i.nome }}:</b> {{ i.nivel }}</p>
+{% endfor %}
+{% endif %}
+
+</body>
+</html>

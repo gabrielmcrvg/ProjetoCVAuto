@@ -1,9 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from database import SessionDep
 from models.experiencias import Experiencias
 from schemas.experiencia import ExperienciaAtualizar, ExperienciaEntrada, ExperienciaResposta
+from schemas.ia import TextoSugerido
 from seguranca import CurriculoDoUsuario
+from services.gemini import reescrever_texto
 from utils.dependencias import ExperienciaDoUsuario
 
 router = APIRouter(prefix="/curriculos/{curriculo_id}/experiencias", tags=["Experiencias"])
@@ -25,6 +27,19 @@ def criar_experiencia(dados: ExperienciaEntrada, curriculo: CurriculoDoUsuario, 
     session.add(experiencia)
     session.commit()
     return experiencia
+
+
+@router.post("/{experiencia_id}/reescrever", response_model=TextoSugerido)
+def reescrever_experiencia(experiencia: ExperienciaDoUsuario):
+    try:
+        texto_sugerido = reescrever_texto(experiencia.descricao)
+    except Exception as erro:
+        print(f"[IA] Erro ao chamar o Gemini: {erro}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Erro ao se comunicar com o servico de IA",
+        )
+    return TextoSugerido(texto_sugerido=texto_sugerido)
 
 
 @router.patch("/{experiencia_id}", response_model=ExperienciaResposta)

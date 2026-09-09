@@ -11,6 +11,7 @@ class HabilidadeEntrada(BaseModel):
 
 class HabilidadeAtualizar(BaseModel):
     nome: Optional[str] = None
+    categoria: Optional[CategoriaHabilidade] = None
 
 
 class HabilidadeResposta(BaseModel):

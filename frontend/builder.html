@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Meu Curriculo - Criador de Curriculo com IA</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topo">
+  <span class="topo-titulo">Criador de Curriculo com IA</span>
+  <div class="topo-acoes">
+    <span id="topo-email" class="topo-email"></span>
+    <button id="botao-baixar-pdf" class="botao-secundario">Baixar PDF</button>
+    <button id="botao-sair" class="botao-secundario">Sair</button>
+  </div>
+</header>
+
+<!-- Builder principal: editor + preview -->
+<div id="tela-builder" class="builder">
+  <div class="coluna-editor" id="coluna-editor">
+    <!-- as secoes sao inseridas via JS -->
+  </div>
+  <div class="coluna-preview">
+    <div class="preview-cabecalho">
+      <span>Pre-visualizacao</span>
+      <span class="preview-info">atualiza conforme voce digita</span>
+    </div>
+    <div class="pagina-preview" id="pagina-preview">
+      <!-- conteudo do curriculo, gerado via JS -->
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" hidden></div>
+
+<script src="comum.js"></script>
+<script src="builder.js"></script>
+</body>
+</html>

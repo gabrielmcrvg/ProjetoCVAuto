@@ -1,9 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from database import SessionDep
 from models.habilidades import Habilidades
 from schemas.habilidade import HabilidadeAtualizar, HabilidadeEntrada, HabilidadeResposta
+from schemas.ia import SugestaoCategoria
 from seguranca import CurriculoDoUsuario
+from services.gemini import categorizar_habilidades
 from utils.dependencias import HabilidadeDoUsuario
 
 router = APIRouter(prefix="/curriculos/{curriculo_id}/habilidades", tags=["Habilidades"])
@@ -25,6 +27,23 @@ def criar_habilidade(dados: HabilidadeEntrada, curriculo: CurriculoDoUsuario, se
     session.add(habilidade)
     session.commit()
     return habilidade
+
+
+@router.post("/categorizar", response_model=list[SugestaoCategoria])
+def categorizar(curriculo: CurriculoDoUsuario):
+    pendentes = [h for h in curriculo.habilidades if h.categoria is None]
+    if not pendentes:
+        return []
+
+    try:
+        sugestoes = categorizar_habilidades({h.id: h.nome for h in pendentes})
+    except Exception as erro:
+        print(f"[IA] Erro ao chamar o Gemini: {erro}")
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail="Erro ao se comunicar com o servico de IA",
+        )
+    return sugestoes
 
 
 @router.patch("/{habilidade_id}", response_model=HabilidadeResposta)
