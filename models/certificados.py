@@ -16,6 +16,7 @@ class Certificados(Base):
     carga_horaria: Mapped[Optional[int]]
     situacao: Mapped[Situacao]
     periodo: Mapped[str]
+    arquivo_path: Mapped[Optional[str]]
 
     curriculo_id: Mapped[int] = mapped_column(ForeignKey("curriculos.id"))
 
