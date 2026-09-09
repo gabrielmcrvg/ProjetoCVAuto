@@ -11,6 +11,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from database import SessionDep
 from models.usuarios import Usuario
+from models.curriculos import Curriculo
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
@@ -50,9 +51,11 @@ def usuario_atual(session: SessionDep, token: str = Depends(OAuth2_scheme)) -> U
 
 UsuarioAtual = Annotated[Usuario, Depends(usuario_atual)]
 
-def apenas_admin(usuario: UsuarioAtual) -> Usuario:
-    if usuario.papel != "Admin":
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Somente administradores!")
-    return usuario
+def dono_do_curriculo(curriculo_id: int, usuario: UsuarioAtual, session: SessionDep) -> Curriculo:
+    curriculo = session.query(Curriculo).filter(Curriculo.id == curriculo_id).first()
+    erro = HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Curriculo nao encontrado")
+    if curriculo is None or curriculo.usuario_id != usuario.id:
+        raise erro
+    return curriculo
 
-AdminAtual = Annotated[Usuario, Depends(apenas_admin)]
+CurriculoDoUsuario = Annotated[Curriculo, Depends(dono_do_curriculo)]
