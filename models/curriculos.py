@@ -16,8 +16,8 @@ class Curriculo(Base):
     nome_completo: Mapped[str]
     localizacao: Mapped[str]
     telefone: Mapped[str]
-    linkedin_url: Mapped[Optional[str]]
-    github_url: Mapped[Optional[str]]
+    url_1: Mapped[Optional[str]]
+    url_2: Mapped[Optional[str]]
 
     usuario_id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"))
 
