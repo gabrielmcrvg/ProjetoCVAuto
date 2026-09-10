@@ -298,6 +298,7 @@ textarea {
   width: 100%;
   max-width: 720px;
   min-height: 960px;
+  flex-shrink: 0;
   box-shadow: 0 4px 20px rgba(20, 24, 33, 0.12);
   padding: 48px 44px;
   font-family: Helvetica, Arial, sans-serif;
