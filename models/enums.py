@@ -4,8 +4,10 @@ import enum
 class CategoriaHabilidade(str, enum.Enum):
     LINGUAGENS_PROGRAMACAO = "Linguagens de Programação"
     FRAMEWORKS_BIBLIOTECAS = "Frameworks & Bibliotecas"
+    ARQUITETURA_SOFTWARE = "Arquitetura de Software"
     BANCO_DE_DADOS = "Banco de Dados"
     NUVEM_DEVOPS = "Nuvem & DevOps"
+    CONTROLE_VERSAO = "Controle de Versão"
     SEGURANCA_INFORMACAO = "Segurança da Informação"
     REDES_INFRAESTRUTURA = "Redes & Infraestrutura"
     ANALISE_DADOS_BI = "Análise de Dados & BI"

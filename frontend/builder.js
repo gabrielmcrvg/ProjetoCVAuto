@@ -1,5 +1,6 @@
 "use strict";
 
+
 let usuarioEmail = null;
 let curriculo = null;
 let secoesAbertas = new Set(["dados-pessoais", "formacoes"]);
@@ -15,8 +16,9 @@ let estadoEdicao = {
 const SITUACOES_FORMACAO = ["Concluído", "Em andamento", "Trancado", "Incompleto"];
 
 const CATEGORIAS_HABILIDADE = [
-  "Linguagens de Programação", "Frameworks & Bibliotecas", "Banco de Dados",
-  "Nuvem & DevOps", "Segurança da Informação", "Redes & Infraestrutura",
+  "Linguagens de Programação", "Frameworks & Bibliotecas", "Arquitetura de Software",
+  "Banco de Dados", "Nuvem & DevOps", "Controle de Versão",
+  "Segurança da Informação", "Redes & Infraestrutura",
   "Análise de Dados & BI", "Design & Criatividade", "Marketing & Vendas",
   "Gestão & Liderança", "Finanças & Contabilidade", "Atendimento ao Cliente",
   "Metodologias & Processos", "Ferramentas de Escritório", "Habilidades Interpessoais",
@@ -79,11 +81,13 @@ const CONFIG_SECOES = {
   },
 };
 
+
 function containerIdLista(chave) { return "lista-" + chave; }
 
 function formIdCampo(chave, nomeCampo, modo, itemId) {
   return modo === "novo" ? `novo-${chave}-${nomeCampo}` : `editar-${chave}-${itemId}-${nomeCampo}`;
 }
+
 
 async function iniciarBuilder() {
   if (!exigirAutenticacao()) return;
@@ -109,6 +113,7 @@ async function iniciarBuilder() {
     }
   }
 }
+
 
 function renderEditor() {
   const raiz = document.getElementById("coluna-editor");
@@ -208,6 +213,7 @@ async function salvarDadosPessoais() {
   Object.assign(curriculo, atualizado);
   mostrarToast("Dados pessoais salvos.");
 }
+
 
 function renderizarShellSecao(chave) {
   const cfg = CONFIG_SECOES[chave];
@@ -384,6 +390,7 @@ async function excluirItem(chave, itemId) {
   mostrarToast("Excluído.");
 }
 
+
 async function reescreverTextoGenerico(elementoId, botao) {
   const campo = document.getElementById(elementoId);
   if (!campo) return;
@@ -407,6 +414,7 @@ async function reescreverTextoGenerico(elementoId, botao) {
     botao.textContent = rotuloOriginal;
   }
 }
+
 
 function renderizarShellHabilidades() {
   const aberta = secoesAbertas.has("habilidades") ? "aberta" : "";
@@ -557,11 +565,13 @@ async function aplicarCategoriaSugerida(itemId, categoria) {
   mostrarToast("Categoria aplicada.");
 }
 
+
 function alternarSecao(chave) {
   if (secoesAbertas.has(chave)) secoesAbertas.delete(chave); else secoesAbertas.add(chave);
   const el = document.querySelector(`.secao[data-secao-id="${chave}"]`);
   if (el) el.classList.toggle("aberta");
 }
+
 
 function formatarDataMesAno(dataIso) {
   if (!dataIso) return null;
@@ -676,11 +686,13 @@ function renderPreview() {
   raiz.innerHTML = html;
 }
 
+
 function slugificarNomeArquivo(texto) {
   const base = String(texto || "").trim().toLowerCase().replace(/\s+/g, "_");
   const limpo = base.replace(/[\\/:*?"<>|]/g, "");
   return limpo || "curriculo";
 }
+
 
 document.getElementById("botao-sair").addEventListener("click", () => {
   sair();
@@ -705,6 +717,7 @@ document.getElementById("botao-baixar-pdf").addEventListener("click", async () =
     mostrarToast(erro.message, true);
   }
 });
+
 
 document.getElementById("coluna-editor").addEventListener("click", async (ev) => {
   const alvo = ev.target.closest("[data-acao]");
@@ -751,5 +764,6 @@ document.getElementById("coluna-editor").addEventListener("click", async (ev) =>
     mostrarToast(erro.message || "Ocorreu um erro.", true);
   }
 });
+
 
 iniciarBuilder();
