@@ -9,15 +9,16 @@ function aplicarTemaSalvo() {
   document.documentElement.setAttribute("data-tema", tema);
 }
 
-function textoBotaoTema(tema) {
-  return tema === "escuro" ? "Modo claro" : "Modo escuro";
+function tituloBotaoTema(tema) {
+  return tema === "escuro" ? "Mudar pra modo claro" : "Mudar pra modo escuro";
 }
 
 function atualizarBotaoTema() {
   const botao = document.getElementById("botao-tema");
   if (!botao) return;
   const tema = document.documentElement.getAttribute("data-tema") || "escuro";
-  botao.textContent = textoBotaoTema(tema);
+  botao.title = tituloBotaoTema(tema);
+  botao.setAttribute("aria-label", tituloBotaoTema(tema));
 }
 
 function alternarTema() {

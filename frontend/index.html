@@ -3,27 +3,41 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Criador de Curriculo com IA</title>
+<title>VitAI</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<button id="botao-tema" class="botao-secundario botao-tema-flutuante">Modo claro</button>
+<button id="botao-tema" class="botao-secundario botao-tema-flutuante">
+  <svg class="icone-tema icone-sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><line x1="12" y1="2" x2="12" y2="4"></line><line x1="12" y1="20" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"></line><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="4" y2="12"></line><line x1="20" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"></line><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"></line></svg>
+  <svg class="icone-tema icone-lua" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+</button>
 
 <div id="tela-auth" class="tela-auth">
   <div class="cartao-auth">
-    <h1>Criador de Curriculo com IA</h1>
+    <div class="cabecalho-auth">
+      <svg class="logo-vitai" viewBox="0 0 113 62" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="VitAI">
+        <text x="8" y="49" font-family="-apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="44" font-weight="800" letter-spacing="-0.5"><tspan fill="var(--cor-texto)">Vit</tspan><tspan fill="var(--cor-primaria)">AI</tspan></text>
+      </svg>
+      <p class="subtitulo-auth">Crie currículos profissionais com ajuda de IA</p>
+    </div>
 
     <div id="auth-erro" class="mensagem-erro" hidden></div>
 
     <form id="form-login">
       <h2>Entrar</h2>
       <label>Email
-        <input type="email" id="login-email" required autocomplete="username">
+        <div class="campo-com-icone">
+          <svg class="icone-campo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+          <input type="email" id="login-email" required autocomplete="username">
+        </div>
       </label>
       <label>Senha
-        <input type="password" id="login-senha" required autocomplete="current-password">
+        <div class="campo-com-icone">
+          <svg class="icone-campo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+          <input type="password" id="login-senha" required autocomplete="current-password">
+        </div>
       </label>
       <button type="submit">Entrar</button>
       <p class="troca-form">Ainda nao tem conta? <a href="#" id="ir-para-registro">Criar conta</a></p>
@@ -32,10 +46,16 @@
     <form id="form-registro" hidden>
       <h2>Criar conta</h2>
       <label>Email
-        <input type="email" id="registro-email" required autocomplete="username">
+        <div class="campo-com-icone">
+          <svg class="icone-campo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg>
+          <input type="email" id="registro-email" required autocomplete="username">
+        </div>
       </label>
       <label>Senha (minimo 6 caracteres)
-        <input type="password" id="registro-senha" required minlength="6" autocomplete="new-password">
+        <div class="campo-com-icone">
+          <svg class="icone-campo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+          <input type="password" id="registro-senha" required minlength="6" autocomplete="new-password">
+        </div>
       </label>
       <button type="submit">Criar conta</button>
       <p class="troca-form">Ja tem conta? <a href="#" id="ir-para-login">Entrar</a></p>
