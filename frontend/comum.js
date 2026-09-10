@@ -1,11 +1,42 @@
 "use strict";
 
-/* ============================================================
-   COMUM: token, helpers genericos e cliente de API.
-   Carregado por index.html, criar-curriculo.html e builder.html.
-   ============================================================ */
 
 const CHAVE_TOKEN = "cvauto_token";
+const CHAVE_TEMA = "cvauto_tema";
+
+function aplicarTemaSalvo() {
+  const tema = localStorage.getItem(CHAVE_TEMA) || "escuro";
+  document.documentElement.setAttribute("data-tema", tema);
+}
+
+function textoBotaoTema(tema) {
+  return tema === "escuro" ? "Modo claro" : "Modo escuro";
+}
+
+function atualizarBotaoTema() {
+  const botao = document.getElementById("botao-tema");
+  if (!botao) return;
+  const tema = document.documentElement.getAttribute("data-tema") || "escuro";
+  botao.textContent = textoBotaoTema(tema);
+}
+
+function alternarTema() {
+  const atual = document.documentElement.getAttribute("data-tema") || "escuro";
+  const novo = atual === "escuro" ? "claro" : "escuro";
+  document.documentElement.setAttribute("data-tema", novo);
+  localStorage.setItem(CHAVE_TEMA, novo);
+  atualizarBotaoTema();
+}
+
+function inicializarBotaoTema() {
+  const botao = document.getElementById("botao-tema");
+  if (!botao) return;
+  atualizarBotaoTema();
+  botao.addEventListener("click", alternarTema);
+}
+
+aplicarTemaSalvo();
+document.addEventListener("DOMContentLoaded", inicializarBotaoTema);
 
 function obterToken() {
   return localStorage.getItem(CHAVE_TOKEN);
@@ -81,8 +112,6 @@ async function api(caminho, opcoes) {
   return dados;
 }
 
-/* Decide pra qual tela mandar o usuario logado: se ele ja tem
-   currículo, vai direto pro builder; senao, pra tela de criar. */
 async function irParaTelaCorreta() {
   const lista = await api("/curriculos/");
   if (lista.length === 0) {

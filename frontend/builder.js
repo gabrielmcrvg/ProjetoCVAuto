@@ -1,11 +1,7 @@
 "use strict";
 
-/* ============================================================
-   PAGINA: BUILDER (editor + pre-visualizacao) - builder.html
-   ============================================================ */
-
 let usuarioEmail = null;
-let curriculo = null; // objeto CurriculoCompleto (dados + listas), espelhado localmente
+let curriculo = null;
 let secoesAbertas = new Set(["dados-pessoais", "formacoes"]);
 let estadoEdicao = {
   formacoes: null,
@@ -83,19 +79,11 @@ const CONFIG_SECOES = {
   },
 };
 
-/* ============================================================
-   HELPERS DESTA TELA
-   ============================================================ */
-
 function containerIdLista(chave) { return "lista-" + chave; }
 
 function formIdCampo(chave, nomeCampo, modo, itemId) {
   return modo === "novo" ? `novo-${chave}-${nomeCampo}` : `editar-${chave}-${itemId}-${nomeCampo}`;
 }
-
-/* ============================================================
-   INICIALIZACAO DO BUILDER
-   ============================================================ */
 
 async function iniciarBuilder() {
   if (!exigirAutenticacao()) return;
@@ -113,8 +101,6 @@ async function iniciarBuilder() {
     renderEditor();
     renderPreview();
   } catch (erro) {
-    // so manda pro login se a autenticacao de fato falhou; erro de rede
-    // (inclusive fetch abortado por uma navegacao) nao deve deslogar
     if (erro.status === 401) {
       limparToken();
       window.location.href = "index.html";
@@ -123,10 +109,6 @@ async function iniciarBuilder() {
     }
   }
 }
-
-/* ============================================================
-   RENDERIZACAO DO EDITOR (coluna da esquerda)
-   ============================================================ */
 
 function renderEditor() {
   const raiz = document.getElementById("coluna-editor");
@@ -226,8 +208,6 @@ async function salvarDadosPessoais() {
   Object.assign(curriculo, atualizado);
   mostrarToast("Dados pessoais salvos.");
 }
-
-/* -------- secoes genericas (formacoes, experiencias, projetos, idiomas, certificados) -------- */
 
 function renderizarShellSecao(chave) {
   const cfg = CONFIG_SECOES[chave];
@@ -404,8 +384,6 @@ async function excluirItem(chave, itemId) {
   mostrarToast("Excluído.");
 }
 
-/* -------- reescrever com IA (generico, usado em varios campos) -------- */
-
 async function reescreverTextoGenerico(elementoId, botao) {
   const campo = document.getElementById(elementoId);
   if (!campo) return;
@@ -429,8 +407,6 @@ async function reescreverTextoGenerico(elementoId, botao) {
     botao.textContent = rotuloOriginal;
   }
 }
-
-/* -------- secao de habilidades (comportamento proprio) -------- */
 
 function renderizarShellHabilidades() {
   const aberta = secoesAbertas.has("habilidades") ? "aberta" : "";
@@ -581,20 +557,11 @@ async function aplicarCategoriaSugerida(itemId, categoria) {
   mostrarToast("Categoria aplicada.");
 }
 
-/* ============================================================
-   ACORDEAO
-   ============================================================ */
-
 function alternarSecao(chave) {
   if (secoesAbertas.has(chave)) secoesAbertas.delete(chave); else secoesAbertas.add(chave);
   const el = document.querySelector(`.secao[data-secao-id="${chave}"]`);
   if (el) el.classList.toggle("aberta");
 }
-
-/* ============================================================
-   PRE-VISUALIZACAO (coluna da direita)
-   Espelha a mesma logica do template usado para gerar o PDF.
-   ============================================================ */
 
 function formatarDataMesAno(dataIso) {
   if (!dataIso) return null;
@@ -709,20 +676,11 @@ function renderPreview() {
   raiz.innerHTML = html;
 }
 
-/* ============================================================
-   NOME DO ARQUIVO DO PDF (baseado no titulo do curriculo)
-   ============================================================ */
-
 function slugificarNomeArquivo(texto) {
   const base = String(texto || "").trim().toLowerCase().replace(/\s+/g, "_");
-  // remove apenas caracteres invalidos em nomes de arquivo; mantem acentos
   const limpo = base.replace(/[\\/:*?"<>|]/g, "");
   return limpo || "curriculo";
 }
-
-/* ============================================================
-   EVENTOS: TOPO
-   ============================================================ */
 
 document.getElementById("botao-sair").addEventListener("click", () => {
   sair();
@@ -747,10 +705,6 @@ document.getElementById("botao-baixar-pdf").addEventListener("click", async () =
     mostrarToast(erro.message, true);
   }
 });
-
-/* ============================================================
-   EVENTOS: EDITOR (delegacao de clique)
-   ============================================================ */
 
 document.getElementById("coluna-editor").addEventListener("click", async (ev) => {
   const alvo = ev.target.closest("[data-acao]");
@@ -797,9 +751,5 @@ document.getElementById("coluna-editor").addEventListener("click", async (ev) =>
     mostrarToast(erro.message || "Ocorreu um erro.", true);
   }
 });
-
-/* ============================================================
-   INICIALIZACAO
-   ============================================================ */
 
 iniciarBuilder();

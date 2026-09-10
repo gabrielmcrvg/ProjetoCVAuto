@@ -1,20 +1,13 @@
 "use strict";
 
-/* ============================================================
-   PAGINA: "VAMOS CRIAR SEU CURRICULO" (criar-curriculo.html)
-   ============================================================ */
-
 async function iniciarTelaCriarCurriculo() {
   if (!exigirAutenticacao()) return;
   try {
     const lista = await api("/curriculos/");
     if (lista.length > 0) {
-      // usuario ja tem curriculo, essa tela nao se aplica mais a ele
       window.location.href = "builder.html";
     }
   } catch (erro) {
-    // so manda pro login se a autenticacao de fato falhou; erro de rede
-    // (inclusive fetch abortado por uma navegacao) nao deve deslogar
     if (erro.status === 401) {
       limparToken();
       window.location.href = "index.html";

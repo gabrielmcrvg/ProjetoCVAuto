@@ -1,9 +1,5 @@
 "use strict";
 
-/* ============================================================
-   PAGINA: LOGIN / REGISTRO (index.html)
-   ============================================================ */
-
 function mostrarErroAuth(mensagem) {
   const el = document.getElementById("auth-erro");
   el.textContent = mensagem;
@@ -30,16 +26,12 @@ async function loginComCredenciais(email, senha) {
   salvarToken(dados.access_token);
 }
 
-/* Se ja existe um token salvo (ex: usuario voltou pra tela de login
-   com a sessao ainda valida), pula direto pra tela certa. */
 async function verificarSessaoExistente() {
   if (!obterToken()) return;
   try {
     await api("/usuarios/me");
     await irParaTelaCorreta();
   } catch (erro) {
-    // so descarta o token se o servidor de fato rejeitou a autenticacao;
-    // erros de rede/navegacao (ex: fetch abortado) nao devem deslogar o usuario
     if (erro.status === 401) {
       limparToken();
     }

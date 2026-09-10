@@ -15,7 +15,7 @@ from models.curriculos import Curriculo
 
 load_dotenv()
 SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = "HS256" # Algoritmo da assinatura/Token
+ALGORITHM = "HS256"
 
 pwd_hash = PasswordHash.recommended()
 OAuth2_scheme = OAuth2PasswordBearer(tokenUrl="usuarios/token")
@@ -27,8 +27,8 @@ def verificar_senha(senha, hash_senha) -> bool:
     return pwd_hash.verify(senha, hash_senha)
 
 def criar_token(dados: dict) -> str:
-    payload = dados.copy() # conteúdo do token
-    exp = datetime.now(timezone.utc) + timedelta(minutes=30) # validade de 30 minutos
+    payload = dados.copy()
+    exp = datetime.now(timezone.utc) + timedelta(minutes=30)
     payload.update({"exp": exp})
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 

@@ -47,7 +47,6 @@ session.add(curriculo)
 session.commit()
 session.refresh(curriculo)
 
-# ----- Experiencias -----
 session.add(Experiencias(
     cargo="Estagiario Backend",
     empresa="Empresa Teste",
@@ -85,7 +84,6 @@ session.add(Experiencias(
     curriculo_id=curriculo.id,
 ))
 
-# ----- Formacoes -----
 session.add(Formacoes(
     curso="Tecnico em Desenvolvimento de Sistemas",
     instituicao="SENAI",
@@ -104,7 +102,6 @@ session.add(Formacoes(
     curriculo_id=curriculo.id,
 ))
 
-# ----- Habilidades -----
 session.add(Habilidades(nome="Python", categoria=CategoriaHabilidade.LINGUAGENS_PROGRAMACAO, curriculo_id=curriculo.id))
 session.add(Habilidades(nome="SQL", categoria=CategoriaHabilidade.LINGUAGENS_PROGRAMACAO, curriculo_id=curriculo.id))
 session.add(Habilidades(nome="FastAPI", categoria=CategoriaHabilidade.FRAMEWORKS_BIBLIOTECAS, curriculo_id=curriculo.id))
@@ -116,11 +113,9 @@ session.add(Habilidades(nome="Scrum", categoria=CategoriaHabilidade.METODOLOGIAS
 session.add(Habilidades(nome="Docker", categoria=None, curriculo_id=curriculo.id))
 session.add(Habilidades(nome="Linux", categoria=None, curriculo_id=curriculo.id))
 
-# ----- Idiomas -----
 session.add(Idiomas(nome="Ingles", nivel="Intermediario", curriculo_id=curriculo.id))
 session.add(Idiomas(nome="Espanhol", nivel="Basico", curriculo_id=curriculo.id))
 
-# ----- Projetos -----
 session.add(Projetos(
     nome="Criador de Curriculo com IA",
     contexto="Projeto pessoal de portfolio",
@@ -154,7 +149,6 @@ session.add(Projetos(
     curriculo_id=curriculo.id,
 ))
 
-# ----- Certificados -----
 session.add(Certificados(
     nome="Introducao a APIs REST",
     instituicao="Alura",
