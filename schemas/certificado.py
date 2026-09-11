@@ -9,7 +9,7 @@ class CertificadoEntrada(BaseModel):
     nome: str
     instituicao: str
     carga_horaria: Optional[int] = None
-    periodo: str
+    periodo: Optional[str] = None
     situacao: SituacaoCertificado = SituacaoCertificado.CONCLUIDO
 
 
@@ -29,4 +29,4 @@ class CertificadoResposta(BaseModel):
     instituicao: str
     carga_horaria: Optional[int] = None
     situacao: SituacaoCertificado
-    periodo: str
+    periodo: Optional[str] = None
