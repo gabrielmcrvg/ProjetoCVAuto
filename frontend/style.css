@@ -143,6 +143,17 @@ label > input, label > textarea, label > select {
   margin-top: 3px;
 }
 
+.campo-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.campo-checkbox input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
 textarea {
   resize: vertical;
 }

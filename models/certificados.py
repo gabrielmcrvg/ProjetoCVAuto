@@ -4,7 +4,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from database import Base
-from models.enums import Situacao
+from models.enums import SituacaoCertificado
 
 
 class Certificados(Base):
@@ -14,7 +14,7 @@ class Certificados(Base):
     nome: Mapped[str]
     instituicao: Mapped[str]
     carga_horaria: Mapped[Optional[int]]
-    situacao: Mapped[Situacao]
+    situacao: Mapped[SituacaoCertificado]
     periodo: Mapped[str]
     arquivo_path: Mapped[Optional[str]]
 

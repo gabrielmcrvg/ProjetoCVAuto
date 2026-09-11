@@ -30,3 +30,8 @@ class Situacao(str, enum.Enum):
     EM_ANDAMENTO = "Em andamento"
     TRANCADO = "Trancado"
     INCOMPLETO = "Incompleto"
+
+
+class SituacaoCertificado(str, enum.Enum):
+    CONCLUIDO = "Concluído"
+    EM_ANDAMENTO = "Em andamento"

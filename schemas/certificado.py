@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
-from models.enums import Situacao
+from models.enums import SituacaoCertificado
 
 
 class CertificadoEntrada(BaseModel):
@@ -10,6 +10,7 @@ class CertificadoEntrada(BaseModel):
     instituicao: str
     carga_horaria: Optional[int] = None
     periodo: str
+    situacao: SituacaoCertificado = SituacaoCertificado.CONCLUIDO
 
 
 class CertificadoAtualizar(BaseModel):
@@ -17,6 +18,7 @@ class CertificadoAtualizar(BaseModel):
     instituicao: Optional[str] = None
     carga_horaria: Optional[int] = None
     periodo: Optional[str] = None
+    situacao: Optional[SituacaoCertificado] = None
 
 
 class CertificadoResposta(BaseModel):
@@ -26,5 +28,5 @@ class CertificadoResposta(BaseModel):
     nome: str
     instituicao: str
     carga_horaria: Optional[int] = None
-    situacao: Situacao
+    situacao: SituacaoCertificado
     periodo: str

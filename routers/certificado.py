@@ -2,7 +2,6 @@ from fastapi import APIRouter
 
 from database import SessionDep
 from models.certificados import Certificados
-from models.enums import Situacao
 from schemas.certificado import CertificadoAtualizar, CertificadoEntrada, CertificadoResposta
 from seguranca import CurriculoDoUsuario
 from utils.dependencias import CertificadoDoUsuario
@@ -22,7 +21,7 @@ def buscar_certificado(certificado: CertificadoDoUsuario):
 
 @router.post("/", response_model=CertificadoResposta, status_code=201)
 def criar_certificado(dados: CertificadoEntrada, curriculo: CurriculoDoUsuario, session: SessionDep):
-    certificado = Certificados(**dados.model_dump(), curriculo_id=curriculo.id, situacao=Situacao.CONCLUIDO)
+    certificado = Certificados(**dados.model_dump(), curriculo_id=curriculo.id)
     session.add(certificado)
     session.commit()
     return certificado

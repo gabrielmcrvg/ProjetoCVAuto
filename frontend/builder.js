@@ -32,8 +32,8 @@ const CONFIG_SECOES = {
       { nome: "curso", label: "Curso", tipo: "text" },
       { nome: "instituicao", label: "Instituição", tipo: "text" },
       { nome: "ano_inicio", label: "Ano de início", tipo: "number" },
-      { nome: "ano_conclusao", label: "Ano de conclusão", tipo: "number", opcional: true, ajuda: "Deixe vazio se ainda não concluiu" },
-      { nome: "situacao", label: "Situação", tipo: "select", opcoes: SITUACOES_FORMACAO },
+      { nome: "ano_conclusao", label: "Ano de conclusão", tipo: "number", opcional: true, ajuda: "Deixe vazio se ainda não concluiu", mostraSe: { valor: "Concluído" } },
+      { nome: "situacao", label: "Situação", tipo: "select", opcoes: SITUACOES_FORMACAO, controlaCampo: "ano_conclusao" },
     ],
     linhaResumo: (item) => `<strong>${escapeHtml(item.curso)}</strong><span>${escapeHtml(item.instituicao)} · ${escapeHtml(item.situacao)}</span>`,
   },
@@ -43,11 +43,19 @@ const CONFIG_SECOES = {
       { nome: "cargo", label: "Cargo", tipo: "text" },
       { nome: "empresa", label: "Empresa", tipo: "text" },
       { nome: "data_inicio", label: "Data de início", tipo: "date" },
-      { nome: "data_fim", label: "Data de fim", tipo: "date", opcional: true, ajuda: "Deixe vazio se for o emprego atual" },
+      { nome: "em_andamento", label: "Emprego atual (em andamento)", tipo: "checkbox", controlaCampo: "data_fim", virtual: true },
+      { nome: "data_fim", label: "Data de fim", tipo: "date", opcional: true, ajuda: "Deixe vazio se for o emprego atual", mostraSe: { valor: false } },
       { nome: "descricao", label: "Descrição (uma linha por marcador)", tipo: "textarea" },
     ],
     linhaResumo: (item) => `<strong>${escapeHtml(item.cargo)}</strong><span>${escapeHtml(item.empresa)}</span>`,
     reescrever: { campo: "descricao" },
+    valorVirtualInicial: (nomeVirtual, item) => nomeVirtual === "em_andamento" ? (item.data_fim === null || item.data_fim === undefined) : undefined,
+    transformarPayload: (payload) => {
+      const emAndamento = payload.em_andamento;
+      const { em_andamento, ...resto } = payload;
+      if (emAndamento) resto.data_fim = null;
+      return resto;
+    },
   },
   projetos: {
     titulo: "Projetos",
@@ -76,8 +84,16 @@ const CONFIG_SECOES = {
       { nome: "instituicao", label: "Instituição", tipo: "text" },
       { nome: "carga_horaria", label: "Carga horária (em horas)", tipo: "number", opcional: true },
       { nome: "periodo", label: "Período", tipo: "text", ajuda: "Ex: 2025" },
+      { nome: "em_andamento", label: "Em andamento (ainda não concluí)", tipo: "checkbox", virtual: true },
     ],
-    linhaResumo: (item) => `<strong>${escapeHtml(item.nome)}</strong><span>${escapeHtml(item.instituicao)}</span>`,
+    linhaResumo: (item) => `<strong>${escapeHtml(item.nome)}</strong><span>${escapeHtml(item.instituicao)} · ${escapeHtml(item.situacao)}</span>`,
+    valorVirtualInicial: (nomeVirtual, item) => nomeVirtual === "em_andamento" ? item.situacao === "Em andamento" : undefined,
+    transformarPayload: (payload) => {
+      const emAndamento = payload.em_andamento;
+      const { em_andamento, ...resto } = payload;
+      resto.situacao = emAndamento ? "Em andamento" : "Concluído";
+      return resto;
+    },
   },
 };
 
@@ -130,6 +146,7 @@ function renderEditor() {
 
   for (const chave of ["formacoes", "experiencias", "projetos", "idiomas", "certificados"]) {
     document.getElementById(`novo-${chave}`).innerHTML = renderizarFormNovoItem(chave, CONFIG_SECOES[chave]);
+    ativarCamposCondicionais(chave, CONFIG_SECOES[chave], "novo");
     renderizarListaSecao(chave);
   }
   renderizarListaHabilidades();
@@ -234,6 +251,9 @@ function renderizarShellSecao(chave) {
 
 function renderizarCampoHtml(chave, campo, valorAtual, modo, itemId) {
   const id = formIdCampo(chave, campo.nome, modo, itemId);
+  if (campo.tipo === "checkbox") {
+    return `<label id="rotulo-${id}" class="campo-checkbox"><input type="checkbox" id="${id}" ${valorAtual ? "checked" : ""}> ${escapeHtml(campo.label)}</label>`;
+  }
   const valor = valorAtual === undefined || valorAtual === null ? "" : valorAtual;
   const ajuda = campo.ajuda ? `<div class="campo-ajuda">${escapeHtml(campo.ajuda)}</div>` : "";
   let controle;
@@ -247,7 +267,38 @@ function renderizarCampoHtml(chave, campo, valorAtual, modo, itemId) {
   } else {
     controle = `<input type="${campo.tipo}" id="${id}" value="${escapeHtml(valor)}">`;
   }
-  return `<label>${escapeHtml(campo.label)}${controle}${ajuda}</label>`;
+  return `<label id="rotulo-${id}">${escapeHtml(campo.label)}${controle}${ajuda}</label>`;
+}
+
+function valorInicialCampo(cfg, campo, item) {
+  if (campo.tipo === "checkbox" && cfg.valorVirtualInicial && item) {
+    const valor = cfg.valorVirtualInicial(campo.nome, item);
+    if (valor !== undefined) return valor;
+  }
+  return item ? item[campo.nome] : "";
+}
+
+function ativarCamposCondicionais(chave, cfg, modo, itemId) {
+  for (const campoControlador of cfg.campos) {
+    if (!campoControlador.controlaCampo) continue;
+    const campoAlvo = cfg.campos.find(c => c.nome === campoControlador.controlaCampo);
+    if (!campoAlvo || !campoAlvo.mostraSe) continue;
+    const elControlador = document.getElementById(formIdCampo(chave, campoControlador.nome, modo, itemId));
+    const idAlvo = formIdCampo(chave, campoAlvo.nome, modo, itemId);
+    const rotuloAlvo = document.getElementById(`rotulo-${idAlvo}`);
+    if (!elControlador || !rotuloAlvo) continue;
+    const aplicar = () => {
+      const valorControlador = campoControlador.tipo === "checkbox" ? elControlador.checked : elControlador.value;
+      const mostrar = valorControlador === campoAlvo.mostraSe.valor;
+      rotuloAlvo.style.display = mostrar ? "" : "none";
+      if (!mostrar) {
+        const elAlvo = document.getElementById(idAlvo);
+        if (elAlvo) elAlvo.value = "";
+      }
+    };
+    aplicar();
+    elControlador.addEventListener("change", aplicar);
+  }
 }
 
 function renderizarLinhaItem(chave, cfg, item) {
@@ -264,7 +315,7 @@ function renderizarLinhaItem(chave, cfg, item) {
 }
 
 function renderizarFormItem(chave, cfg, item) {
-  const camposHtml = cfg.campos.map(c => renderizarCampoHtml(chave, c, item[c.nome], "editar", item.id)).join("");
+  const camposHtml = cfg.campos.map(c => renderizarCampoHtml(chave, c, valorInicialCampo(cfg, c, item), "editar", item.id)).join("");
   let reescreverHtml = "";
   if (cfg.reescrever) {
     const idCampo = formIdCampo(chave, cfg.reescrever.campo, "editar", item.id);
@@ -312,6 +363,9 @@ function renderizarListaSecao(chave) {
       ? renderizarFormItem(chave, cfg, item)
       : renderizarLinhaItem(chave, cfg, item);
   }).join("");
+  if (estadoEdicao[chave] != null) {
+    ativarCamposCondicionais(chave, cfg, "editar", estadoEdicao[chave]);
+  }
 }
 
 function atualizarContagemSecao(chave) {
@@ -321,6 +375,9 @@ function atualizarContagemSecao(chave) {
 
 function valorDoCampo(chave, campo, modo, itemId) {
   const el = document.getElementById(formIdCampo(chave, campo.nome, modo, itemId));
+  if (campo.tipo === "checkbox") {
+    return el.checked;
+  }
   let valor = el.value;
   if (campo.tipo === "number") {
     return valor === "" ? null : Number(valor);
@@ -333,7 +390,7 @@ function valorDoCampo(chave, campo, modo, itemId) {
 
 function validarCamposObrigatorios(cfg, chave, modo, itemId) {
   for (const campo of cfg.campos) {
-    if (campo.opcional) continue;
+    if (campo.opcional || campo.tipo === "checkbox") continue;
     const el = document.getElementById(formIdCampo(chave, campo.nome, modo, itemId));
     if (String(el.value).trim() === "") {
       mostrarToast(`Preencha o campo "${campo.label}".`, true);
@@ -346,26 +403,29 @@ function validarCamposObrigatorios(cfg, chave, modo, itemId) {
 async function adicionarItem(chave) {
   const cfg = CONFIG_SECOES[chave];
   if (!validarCamposObrigatorios(cfg, chave, "novo")) return;
-  const payload = {};
+  let payload = {};
   for (const campo of cfg.campos) {
     payload[campo.nome] = valorDoCampo(chave, campo, "novo");
   }
+  if (cfg.transformarPayload) payload = cfg.transformarPayload(payload);
   const criado = await api(`/curriculos/${curriculo.id}/${chave}/`, { method: "POST", body: payload });
   curriculo[chave].push(criado);
   renderizarListaSecao(chave);
   atualizarContagemSecao(chave);
   renderPreview();
   document.getElementById(`novo-${chave}`).innerHTML = renderizarFormNovoItem(chave, cfg);
+  ativarCamposCondicionais(chave, cfg, "novo");
   mostrarToast("Adicionado.");
 }
 
 async function salvarEdicaoItem(chave, itemId) {
   const cfg = CONFIG_SECOES[chave];
   if (!validarCamposObrigatorios(cfg, chave, "editar", itemId)) return;
-  const payload = {};
+  let payload = {};
   for (const campo of cfg.campos) {
     payload[campo.nome] = valorDoCampo(chave, campo, "editar", itemId);
   }
+  if (cfg.transformarPayload) payload = cfg.transformarPayload(payload);
   const atualizado = await api(`/curriculos/${curriculo.id}/${chave}/${itemId}`, { method: "PATCH", body: payload });
   const lista = curriculo[chave];
   const indice = lista.findIndex(i => i.id === itemId);
